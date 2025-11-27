@@ -68,7 +68,7 @@ class PythonLanguage(BaseLanguage):
         self.start()
 
         if self.km.is_alive() is False:
-            message.put({"type": "error", "content": "[Python Language]Faild to start Jupyter kernel"})
+            message.put({"type": "error", "content": "[PythonLanguage]Faild to start Jupyter kernel"})
             return
 
         code = "%matplotlib inline" + code
