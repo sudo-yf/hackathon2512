@@ -43,8 +43,8 @@ class CodeAgent:
             if message["name"] != "CodeAgent":
                 message_from_client.put(message)
                 continue
-            # 允许执行代码
             if message["type"] == "request":
+                # 允许执行代码
                 if message["content"] == "deny":
                     self.permission = False
                     logging.info("[CodeAgent]User denied execution")
