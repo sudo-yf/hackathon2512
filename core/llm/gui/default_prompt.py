@@ -42,15 +42,32 @@ Action_description = "Action: Your next action. **Only one step**. No explanatio
 Action_Summary_description = "Action_Summary: A short description of what you just did."
 
 def get_default_prompt(reflection: bool = False, thought: bool = True, action_summary: bool = False, language: str = "Chinese"):
-    prompt = default_prompt
-    prompt.format(Action_description = Action_description, Action = "Action: ...")
-    prompt.format(language = language)
+    kwargs = {
+        "Action_description": Action_description,
+        "Action": "Action: ...",
+        "language": language,
+        "instruction": "{instruction}" # Keep instruction as a placeholder for later formatting
+    }
 
     if reflection:
-        prompt.format(Reflection_description = Reflection_description, Reflection = "Reflection: ...")
-    if thought:
-        prompt.format(Thought_description = Thought_description, Thought = "Thought: ...")
-    if action_summary:
-        prompt.format(Action_Summary_description = Action_Summary_description, Action_Summary = "Action_Summary: ...")
+        kwargs["Reflection_description"] = Reflection_description
+        kwargs["Reflection"] = "Reflection: ..."
+    else:
+        kwargs["Reflection_description"] = ""
+        kwargs["Reflection"] = ""
 
-    return prompt
+    if thought:
+        kwargs["Thought_description"] = Thought_description
+        kwargs["Thought"] = "Thought: ..."
+    else:
+        kwargs["Thought_description"] = ""
+        kwargs["Thought"] = ""
+
+    if action_summary:
+        kwargs["Action_Summary_description"] = Action_Summary_description
+        kwargs["Action_Summary"] = "Action_Summary: ..."
+    else:
+        kwargs["Action_Summary_description"] = ""
+        kwargs["Action_Summary"] = ""
+
+    return default_prompt.format(**kwargs)
