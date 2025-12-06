@@ -1,4 +1,5 @@
 import pyautogui
+import pyperclip
 import time
 from typing import Union, List, Optional
 
@@ -29,7 +30,12 @@ class Keyboard:
             对于中文输入，需要系统已经切换到中文输入法
         """
         try:
-            pyautogui.write(text, interval=interval)
+            print(f"Typing text: {text} with interval: {interval}")
+            old_text = pyperclip.paste()
+            pyperclip.copy(text)
+            pyautogui.hotkey('ctrl', 'v')
+            pyperclip.copy(old_text)
+            time.sleep(interval)
             return {
                 'success': True,
                 'action': 'type_text',
@@ -291,6 +297,10 @@ if __name__ == "__main__":
     # 测试快捷键
     print("测试Ctrl+C快捷键...")
     result = copy()
+    print(f"结果: {result}")
+
+    print("测试输入文本...")
+    result = type_text("Hello, world!你好，世界！", interval=0.1)
     print(f"结果: {result}")
     
     print("键盘模块测试完成！")

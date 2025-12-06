@@ -75,7 +75,7 @@ class GUIAgent:
                 api_key=self.api_key,
                 messages=messages,
                 stream=True,
-                thinking="disabled",
+                thinking="enabled",
             )
             message_to_client.put({"name": "GUIAgent", "type": "status", "content": "[BEGIN]"})
             ai_content = ""
