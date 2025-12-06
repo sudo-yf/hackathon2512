@@ -178,4 +178,4 @@ def map_action_to_function(action_name: str, args: Dict[str, Any], screen_width:
     else:
         logging.warning(f"Unknown action: {action_name}")
 
-    time.sleep(0.4)
+    time.sleep(0.5)
