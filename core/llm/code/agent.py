@@ -29,7 +29,7 @@ class CodeAgent:
         :param message_from_client:
         :return:
         """
-        while True:
+        while not self.stop_agent:
             try:
                 message = message_from_client.get(timeout=0.5)
             except queue.Empty:
@@ -39,8 +39,8 @@ class CodeAgent:
             if message["name"] != "CodeAgent":
                 message_from_client.put(message)
                 continue
-            # 允许执行代码
             if message["type"] == "request":
+                # 允许执行代码
                 if message["content"] == "deny":
                     self.permission = False
                     logging.info("[CodeAgent]User denied execution")
