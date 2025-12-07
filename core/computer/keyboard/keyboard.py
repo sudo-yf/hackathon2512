@@ -27,7 +27,7 @@ class Keyboard:
             >>> keyboard.type_text("慢速输入", interval=0.1)
             
         Note:
-            对于中文输入，需要系统已经切换到中文输入法
+            改用剪贴板来输入中文
         """
         try:
             print(f"Typing text: {text} with interval: {interval}")
@@ -76,6 +76,7 @@ class Keyboard:
             - 修饰键: 'ctrl', 'shift', 'alt', 'win' (或 'command' 在Mac上)
         """
         try:
+            key = "win" if key == "meta" else key # 兼容徽标键别名
             pyautogui.press(key, presses=presses, interval=interval)
             return {
                 'success': True,
@@ -109,6 +110,7 @@ class Keyboard:
             >>> keyboard.hotkey('ctrl', 'a')  # Ctrl+A 全选
         """
         try:
+            keys = tuple("win" if key == "meta" else key for key in keys) # 兼容徽标键别名
             pyautogui.hotkey(*keys)
             return {
                 'success': True,
@@ -137,6 +139,7 @@ class Keyboard:
             >>> keyboard.key_down('shift')  # 按下Shift键
         """
         try:
+            key = "win" if key == "meta" else key
             pyautogui.keyDown(key)
             return {
                 'success': True,
@@ -164,6 +167,7 @@ class Keyboard:
             >>> keyboard.key_up('shift')  # 释放Shift键
         """
         try:
+            key = "win" if key == "meta" else key
             pyautogui.keyUp(key)
             return {
                 'success': True,
@@ -192,6 +196,7 @@ class Keyboard:
             >>> keyboard.hold_key('space', duration=2.0)  # 按住空格键2秒
         """
         try:
+            key = "win" if key == "meta" else key
             pyautogui.keyDown(key)
             time.sleep(duration)
             pyautogui.keyUp(key)
@@ -295,12 +300,20 @@ if __name__ == "__main__":
     print(f"结果: {result}")
     
     # 测试快捷键
-    print("测试Ctrl+C快捷键...")
-    result = copy()
+    print("测试Ctrl+A快捷键...")
+    result = select_all()
     print(f"结果: {result}")
 
     print("测试输入文本...")
     result = type_text("Hello, world!你好，世界！", interval=0.1)
+    print(f"结果: {result}")
+
+    print("测试徽标键")
+    result = hold_key('meta', duration=1.0)
+    print(f"结果: {result}")
+    
+    print("测试长按")
+    result = hold_key('shift', duration=0.5)
     print(f"结果: {result}")
     
     print("键盘模块测试完成！")

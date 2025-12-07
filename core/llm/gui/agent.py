@@ -6,9 +6,9 @@ from queue import Queue
 from litellm import completion
 
 import time
-from core.computer.mouse import click, double_click, right_click, move, drag, scroll
+# from core.computer.mouse import click, double_click, right_click, move, drag, scroll
 from core.computer.screen import Screen
-from core.computer.keyboard import type_text, press, hotkey, key_down, key_up
+# from core.computer.keyboard import type_text, press, hotkey, key_down, key_up
 
 from .default_prompt import get_default_prompt
 
