@@ -41,35 +41,20 @@ except:
 # [新增] 主题预设系统
 # ==========================================
 THEME_PRESETS = {
-    "经典果冻": {
-        "jelly_bg": "#F5F6FA", "jelly_border": "#FFFFFF",
+    "经典白": {
+        "jelly_bg": "#FFFFFF", "jelly_border": "#E5E5EA",
         "text_main": "#1D1D1F", "text_sub": "#86868B",
-        "btn_hover": "#E5E5EA", "entry_bg": "#FFFFFF"
+        "btn_hover": "#F5F5F7", "entry_bg": "#F5F5F7"
     },
-    "暗夜极光": {
-        "jelly_bg": "#2C2C2E", "jelly_border": "#3A3A3C",
-        "text_main": "#FFFFFF", "text_sub": "#AEAEB2",
-        "btn_hover": "#3A3A3C", "entry_bg": "#1C1C1E"
-    },
-    "樱花布丁": {
-        "jelly_bg": "#FFF0F5", "jelly_border": "#FFFFFF",
-        "text_main": "#4A232F", "text_sub": "#9C7C85",
-        "btn_hover": "#FDE2E8", "entry_bg": "#FFFFFF"
-    },
-    "薄荷苏打": {
-        "jelly_bg": "#F0FFF4", "jelly_border": "#FFFFFF",
-        "text_main": "#183D22", "text_sub": "#7A9682",
-        "btn_hover": "#DCFCE7", "entry_bg": "#FFFFFF"
-    },
-    "海盐冰川": {
-        "jelly_bg": "#F0F8FF", "jelly_border": "#FFFFFF",
-        "text_main": "#1A2F4B", "text_sub": "#7B8CA6",
-        "btn_hover": "#E1EFFE", "entry_bg": "#FFFFFF"
+    "纯粹黑": {
+        "jelly_bg": "#000000", "jelly_border": "#333333",
+        "text_main": "#FFFFFF", "text_sub": "#98989D",
+        "btn_hover": "#1C1C1E", "entry_bg": "#1C1C1E"
     }
 }
 
-# 当前使用的主题 (默认经典)
-CURRENT_THEME = THEME_PRESETS["经典果冻"].copy()
+# 当前使用的主题 (默认经典白)
+CURRENT_THEME = THEME_PRESETS["经典白"].copy()
 # 补充通用配置
 CURRENT_THEME.update({
     "transparent_bg_key": "#000001",
@@ -131,7 +116,7 @@ class HistoryManager:
 # 基础窗口类
 # ==========================================
 class JellyBaseWindow(ctk.CTk):
-    def __init__(self, width, height, center_on_screen=True, top_offset=None, corner_radius=None, padding=15):
+    def __init__(self, width, height, center_on_screen=True, top_offset=None, corner_radius=None, padding=2):
         super().__init__()
         self.overrideredirect(True)
         self.attributes('-topmost', True)
@@ -249,6 +234,12 @@ class GuideWindow(JellyBaseWindow):
         ctk.CTkLabel(header, text="快速入门指南", font=("PingFang SC", 20, "bold"),
                      text_color=CURRENT_THEME["text_main"]).pack(side="left", padx=10)
 
+        # [新增] 关闭按钮
+        btn_close = ctk.CTkButton(header, text="×", width=30, height=30, fg_color="transparent",
+                                  text_color=CURRENT_THEME["text_sub"], hover_color=CURRENT_THEME["btn_hover"],
+                                  font=("Arial", 20), command=self.destroy)
+        btn_close.pack(side="right")
+
         model_box = ctk.CTkFrame(self.bar_frame, fg_color="#FFFFFF", corner_radius=12, border_width=1,
                                  border_color="#E5E5EA")
         model_box.pack(fill="x", padx=20, pady=5)
@@ -364,12 +355,13 @@ class ConfigWindow(JellyBaseWindow):
 # ==========================================
 class LiquidBar(JellyBaseWindow):
     def __init__(self):
-        super().__init__(540, 60, center_on_screen=False, top_offset=50, corner_radius=25, padding=5)  # 稍微加宽一点给新按钮
+        super().__init__(540, 60, center_on_screen=False, top_offset=50, corner_radius=30, padding=5)  # 稍微加宽一点给新按钮
 
         self.history_manager = HistoryManager()
         self.history_popup = None
         self.guide_window = None
         self.theme_popup = None  # 皮肤弹窗
+        self.settings_popup = None  # 设置弹窗
 
         self.setup_ui()
         self.setup_backend()
@@ -400,15 +392,9 @@ class LiquidBar(JellyBaseWindow):
 
         # 按钮组：帮助、历史、换肤、运行、停止
 
-        self.btn_help = self.create_icon_btn(self.layout, "❓", self.open_guide)
-        self.btn_help.grid(row=0, column=2, padx=2)
-
-        self.btn_history = self.create_icon_btn(self.layout, "🕒", self.toggle_history)
-        self.btn_history.grid(row=0, column=3, padx=2)
-
-        # [新增] 换肤按钮
-        self.btn_theme = self.create_icon_btn(self.layout, "🎨", self.toggle_theme_picker)
-        self.btn_theme.grid(row=0, column=4, padx=2)
+        # [修改] 只有设置按钮
+        self.btn_settings = self.create_icon_btn(self.layout, "⚙️", self.toggle_settings)
+        self.btn_settings.grid(row=0, column=2, padx=2)
 
         self.btn_run = ctk.CTkButton(
             self.layout, text="➤", width=36, height=36, corner_radius=18,
@@ -477,11 +463,78 @@ class LiquidBar(JellyBaseWindow):
         self.entry.configure(fg_color=CURRENT_THEME["entry_bg"], text_color=CURRENT_THEME["text_main"])
 
         # 更新按钮颜色
-        for btn in [self.btn_help, self.btn_history, self.btn_theme]:
-            btn.configure(text_color=CURRENT_THEME["text_main"], hover_color=CURRENT_THEME["btn_hover"])
+        if hasattr(self, 'btn_settings'):
+            self.btn_settings.configure(text_color=CURRENT_THEME["text_main"], hover_color=CURRENT_THEME["btn_hover"])
+            
+        # 如果设置菜单打开，也更新它
+        if self.settings_popup and self.settings_popup.winfo_exists():
+            # 简单策略：关闭重新打开，或者遍历子组件更新
+            self.settings_popup.destroy()
+            self.settings_popup = None
 
         # 关闭弹窗
         if self.theme_popup: self.theme_popup.destroy()
+
+    # --- 设置菜单逻辑 ---
+    def toggle_settings(self):
+        if self.settings_popup and self.settings_popup.winfo_exists():
+            self.settings_popup.destroy()
+            self.settings_popup = None
+            return
+
+        self.settings_popup = ctk.CTkToplevel(self)
+        self.settings_popup.overrideredirect(True)
+        self.settings_popup.attributes('-topmost', True)
+        self.settings_popup.config(background=CURRENT_THEME["transparent_bg_key"])
+        self.settings_popup.attributes('-transparentcolor', CURRENT_THEME["transparent_bg_key"])
+
+        # 计算位置：在设置按钮上方显示
+        # 假设设置按钮在 entry 右边
+        # 获取主窗口位置
+        win_x = self.winfo_x()
+        win_y = self.winfo_y()
+        # 弹窗大小
+        width = 120
+        height = 140 # 3个按钮 approx
+        
+        # 显示在主条上方
+        x = win_x + 350 # 粗略定位到设置按钮附近
+        y = win_y - height - 10
+        
+        self.settings_popup.geometry(f"{width}x{height}+{x}+{y}")
+
+        bg = ctk.CTkFrame(self.settings_popup, fg_color=CURRENT_THEME["jelly_bg"], corner_radius=16, border_width=2, 
+                          border_color=CURRENT_THEME["jelly_border"])
+        bg.pack(fill="both", expand=True, padx=5, pady=5)
+
+        # 菜单按钮生成辅助
+        def create_menu_item(text, cmd):
+            btn = ctk.CTkButton(
+                bg, text=text, fg_color="transparent", text_color=CURRENT_THEME["text_main"],
+                hover_color=CURRENT_THEME["btn_hover"], anchor="w", height=35,
+                command=cmd
+            )
+            btn.pack(fill="x", padx=10, pady=2)
+            return btn
+
+        def on_guide():
+            self.settings_popup.destroy()
+            self.settings_popup = None
+            self.open_guide()
+            
+        def on_history():
+            self.settings_popup.destroy()
+            self.settings_popup = None
+            self.toggle_history()
+            
+        def on_theme():
+            self.settings_popup.destroy()
+            self.settings_popup = None
+            self.toggle_theme_picker()
+
+        create_menu_item("❓ 帮助", on_guide)
+        create_menu_item("🕒 历史", on_history)
+        create_menu_item("🎨 换肤", on_theme)
 
     # --- 其他逻辑保持不变 ---
     def setup_backend(self):
@@ -498,11 +551,82 @@ class LiquidBar(JellyBaseWindow):
         self.check_queue()
 
     def open_guide(self):
+        """打开帮助窗口 - 作为弹出窗口"""
         if self.guide_window and self.guide_window.winfo_exists():
             self.guide_window.focus()
             return
-        self.guide_window = GuideWindow(on_next=None)
-        self.guide_window.mainloop()
+
+        # 创建 Toplevel 弹出窗口
+        self.guide_window = ctk.CTkToplevel(self)
+        self.guide_window.overrideredirect(True)
+        self.guide_window.attributes('-topmost', True)
+        self.guide_window.config(background=CURRENT_THEME["transparent_bg_key"])
+        self.guide_window.attributes('-transparentcolor', CURRENT_THEME["transparent_bg_key"])
+
+        # 窗口大小和位置
+        width, height = 500, 520
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        x = screen_width // 2 - width // 2
+        y = screen_height // 2 - height // 2
+        self.guide_window.geometry(f"{width}x{height}+{x}+{y}")
+
+        # 主框架
+        main_frame = ctk.CTkFrame(
+            self.guide_window,
+            fg_color=CURRENT_THEME["jelly_bg"],
+            corner_radius=32,
+            bg_color=CURRENT_THEME["transparent_bg_key"],
+            border_width=3,
+            border_color=CURRENT_THEME["jelly_border"]
+        )
+        main_frame.pack(fill="both", expand=True, padx=2, pady=2)
+
+        # 头部
+        header = ctk.CTkFrame(main_frame, fg_color="transparent")
+        header.pack(fill="x", padx=20, pady=(20, 10))
+        ctk.CTkLabel(header, text="📘", font=("Arial", 28)).pack(side="left")
+        ctk.CTkLabel(header, text="快速入门指南", font=("PingFang SC", 20, "bold"),
+                     text_color=CURRENT_THEME["text_main"]).pack(side="left", padx=10)
+
+        # 关闭按钮
+        btn_close = ctk.CTkButton(header, text="×", width=30, height=30, fg_color="transparent",
+                                  text_color=CURRENT_THEME["text_sub"], hover_color=CURRENT_THEME["btn_hover"],
+                                  font=("Arial", 20), command=self.guide_window.destroy)
+        btn_close.pack(side="right")
+
+        # 模型信息框
+        model_box = ctk.CTkFrame(main_frame, fg_color="#FFFFFF", corner_radius=12, border_width=1,
+                                 border_color="#E5E5EA")
+        model_box.pack(fill="x", padx=20, pady=5)
+        ctk.CTkLabel(model_box, text="本系统基于火山引擎双模驱动：", font=("Arial", 12, "bold"),
+                     text_color="#1D1D1F").pack(anchor="w", padx=15, pady=(10, 5))
+        ctk.CTkLabel(model_box, text="🧠 DeepSeek V3 (代码逻辑)", font=("Arial", 11),
+                     text_color=CURRENT_THEME["accent_blue"]).pack(anchor="w", padx=25)
+        ctk.CTkLabel(model_box, text="👁️ UI-TARS 1.5 (视觉操作)", font=("Arial", 11),
+                     text_color=CURRENT_THEME["accent_blue"]).pack(anchor="w", padx=25, pady=(0, 10))
+
+        # 步骤说明
+        step_box = ctk.CTkFrame(main_frame, fg_color="transparent")
+        step_box.pack(fill="x", padx=20, pady=10)
+        steps = ["① 点击下方按钮前往火山引擎控制台注册", "② 在「在线推理」中开通服务",
+                 "③ 获取 API Key (无需关注接入点ID)"]
+        for step in steps:
+            ctk.CTkLabel(step_box, text=step, font=("PingFang SC", 12), text_color=CURRENT_THEME["text_main"],
+                         anchor="w").pack(fill="x", pady=2)
+
+        # 跳转按钮
+        def open_url():
+            webbrowser.open(
+                "https://console.volcengine.com/ark/region:ark+cn-beijing/openManagement?LLM=%7B%7D&OpenModelVisible=false")
+
+        btn_link = ctk.CTkButton(main_frame, text="🚀 前往火山引擎创建资源", font=("PingFang SC", 13, "bold"),
+                                      height=40, corner_radius=20, fg_color="#000000", hover_color="#333333",
+                                      command=open_url)
+        btn_link.pack(fill="x", padx=40, pady=10)
+
+        ctk.CTkLabel(main_frame, text="完成上述步骤后，即可开始配置", font=("Arial", 11),
+                     text_color=CURRENT_THEME["text_sub"]).pack(side="bottom", pady=(0, 20))
 
     def toggle_history(self):
         if self.history_popup and self.history_popup.winfo_exists():
@@ -529,6 +653,17 @@ class LiquidBar(JellyBaseWindow):
         bg = ctk.CTkFrame(self.history_popup, fg_color=CURRENT_THEME["jelly_bg"], corner_radius=20, border_width=2,
                           border_color=CURRENT_THEME["jelly_border"])
         bg.pack(fill="both", expand=True, padx=15, pady=5)
+
+        # [新增] 顶部栏（含关闭按钮）
+        header = ctk.CTkFrame(bg, fg_color="transparent", height=30)
+        header.pack(fill="x", padx=10, pady=(10, 5))
+        
+        ctk.CTkLabel(header, text="历史记录", font=("PingFang SC", 14, "bold"), text_color=CURRENT_THEME["text_main"]).pack(side="left")
+        
+        btn_close = ctk.CTkButton(header, text="×", width=25, height=25, fg_color="transparent",
+                                  text_color=CURRENT_THEME["text_sub"], hover_color=CURRENT_THEME["btn_hover"],
+                                  font=("Arial", 18), command=lambda: self.history_popup.destroy() if self.history_popup else None)
+        btn_close.pack(side="right")
 
         btn_clear = ctk.CTkButton(bg, text="🗑️ 清空历史", width=100, height=28, fg_color="transparent",
                                   text_color=CURRENT_THEME["accent_red"], hover_color=CURRENT_THEME["btn_hover"],
