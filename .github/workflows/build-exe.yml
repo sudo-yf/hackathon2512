@@ -29,10 +29,12 @@ jobs:
       - name: Build executable
         run: |
           python .github\workflows\build.py
+          dir
+          dir dist
 
       - name: Create Release Asset
         uses: softprops/action-gh-release@v1
         with:
-          files: dist\*.exe
+          files: dist/*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
