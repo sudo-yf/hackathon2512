@@ -230,8 +230,8 @@ class WelcomeWindow(JellyBaseWindow):
     def setup_ui(self):
         layout = ctk.CTkFrame(self.bar_frame, fg_color="transparent")
         layout.pack(expand=True, fill="both")
-        ctk.CTkLabel(layout, text="🍮", font=("Arial", 72)).pack(pady=(45, 10))
-        ctk.CTkLabel(layout, text="Agent 4", font=("Arial", 28, "bold"), text_color=CURRENT_THEME["text_main"]).pack(
+        ctk.CTkLabel(layout, text="💧", font=("Arial", 72)).pack(pady=(45, 10))
+        ctk.CTkLabel(layout, text="Argus", font=("Arial", 28, "bold"), text_color=CURRENT_THEME["text_main"]).pack(
             pady=(0, 5))
         ctk.CTkLabel(layout, text="欢迎使用", font=("PingFang SC", 18, "bold"),
                      text_color=CURRENT_THEME["accent_blue"]).pack(pady=(5, 0))
