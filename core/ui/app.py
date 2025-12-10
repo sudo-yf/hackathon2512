@@ -1,5 +1,5 @@
 """
-✨ Agent4 Liquid Bar - Apple Jelly Edition
+✨ Argus Liquid Bar - Apple Jelly Edition
 透明、圆角、可视化反馈、果冻动效、历史记录、智能引导、多主题、交互优化版
 """
 
