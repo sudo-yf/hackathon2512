@@ -107,8 +107,7 @@ agent4/
 │   └── ui/             # 界面层
 │       ├── app.py      # Liquid Bar 主程序
 │       └── visualizer.py # 屏幕可视化
-├── scripts/            # 辅助脚本
-├── tests/              # 测试用例
+├── memory_storage/     # ai记忆存储文件夹
 ├── main.py             # 通用入口
 └── requirements.txt
 ```
