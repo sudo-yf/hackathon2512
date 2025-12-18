@@ -47,7 +47,7 @@ GUIAgent_MODEL=doubao-1-5-ui-tars-250428
 GUIAgent_API_BASE=https://ark.cn-beijing.volces.com/api/v3/
 GUIAgent_API_KEY=
 
-CodeAgent_MODEL=doubao-seed-1-6-flash-250828
+CodeAgent_MODEL=deepseek-v3-2-251201
 CodeAgent_API_BASE=https://ark.cn-beijing.volces.com/api/v3/
 CodeAgent_API_KEY=
 ```
