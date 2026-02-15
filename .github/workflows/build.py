@@ -16,7 +16,7 @@ params = [
     '--windowed',
     '--noconfirm',
     '--add-data', f'{ctk_path};customtkinter',  # 添加 customtkinter 的资源文件
-    '--add-data', 'core;core',                  # 添加 core 模块
+    '--add-data', 'src;src',                    # 添加源代码模块
     '--hidden-import', 'PIL',
     '--hidden-import', 'win32gui',
     '--hidden-import', 'win32con',

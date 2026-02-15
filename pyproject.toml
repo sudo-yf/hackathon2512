@@ -1,0 +1,42 @@
+[project]
+name = "argus-dual-agent"
+version = "1.1.0"
+description = "Alibaba Agent Challenge & Gemini Hackathon project: dual-agent desktop automation framework"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "litellm>=1.0.0",
+  "python-dotenv>=0.19.0",
+  "pyautogui>=0.9.54",
+  "pillow>=9.0.0",
+  "jupyter_client>=7.0.0",
+  "ipython>=7.0.0",
+  "fastapi>=0.104.0",
+  "uvicorn>=0.24.0",
+  "websockets>=11.0.0",
+  "ui-tars>=0.1.0",
+  "customtkinter>=5.2.0",
+  "comtypes>=1.1.0; sys_platform == 'win32'",
+  "pywin32>=227; sys_platform == 'win32'",
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff>=0.8.0",
+  "pytest>=8.3.0",
+  "pytest-cov>=5.0.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E9", "I"]
+ignore = []
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

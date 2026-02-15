@@ -1,6 +1,35 @@
-.idea
-.vscode
-__pycache__
-test
+# Python caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
 
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Runtime
 *.log
+.env
+.env.local
+memory_storage/
+core/ui/history.json
