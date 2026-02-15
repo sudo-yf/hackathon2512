@@ -1,4 +1,4 @@
-.PHONY: sync lint format test check run run-cli docker-build docker-run
+.PHONY: sync lint format test check run run-cli doctor docker-build docker-run release-bundle
 
 sync:
 	uv sync
@@ -20,8 +20,14 @@ run:
 run-cli:
 	uv run python main.py --task "输出当前环境检查结果"
 
+doctor:
+	uv run python main.py --doctor
+
 docker-build:
 	docker build -t argus-dual-agent:latest .
 
 docker-run:
 	docker compose run --rm argus
+
+release-bundle:
+	python3 scripts/release_bundle.py

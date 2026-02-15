@@ -98,6 +98,12 @@ make test
 make check
 ```
 
+### 5. 运行前自检
+
+```bash
+make doctor
+```
+
 ## 容器部署
 
 构建镜像：
@@ -155,6 +161,12 @@ hackathon2512/
 - [LangGraph](https://github.com/langchain-ai/langgraph)
 - [Open Interpreter](https://github.com/OpenInterpreter/open-interpreter)
 - [LiteLLM](https://github.com/BerriAI/litellm)
+
+## 发布打包
+
+```bash
+make release-bundle
+```
 
 ## 产品规划与社区
 

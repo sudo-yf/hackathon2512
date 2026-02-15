@@ -4,12 +4,13 @@ import queue
 import threading
 from typing import Optional
 
-from argus.agents.smart_router import get_router
-from argus.bootstrap import setup_environment
 from argus.config import AgentConfig
+from argus.doctor import run_doctor
 
 
 def run_smart_agent(task_description: str, force_agent: Optional[str] = None):
+    from argus.agents.smart_router import get_router
+
     print(f"\n{'=' * 60}")
     print("🤖 智能任务路由器")
     print(f"任务: {task_description}")
@@ -76,16 +77,37 @@ def run_smart_agent(task_description: str, force_agent: Optional[str] = None):
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Argus - 智能任务路由器")
-    parser.add_argument("--task", type=str, required=True, help="任务描述")
+    parser.add_argument("--task", type=str, required=False, help="任务描述")
     parser.add_argument("--force", type=str, choices=["gui", "code"], help="强制使用特定Agent")
+    parser.add_argument("--doctor", action="store_true", help="运行环境自检")
     return parser
 
 
+def print_doctor_result(result: dict) -> None:
+    print("\nArgus Doctor")
+    print("=" * 60)
+    for item in result["checks"]:
+        print(f"[{item['status'].upper():4s}] {item['name']:14s} {item['detail']}")
+    print("-" * 60)
+    print(f"Summary: pass={result['passed']} warn={result['warned']} fail={result['failed']}")
+
+
 def run_cli(argv: list[str] | None = None):
-    setup_environment()
-    config = AgentConfig.from_env()
     parser = build_parser()
     args = parser.parse_args(argv)
+
+    config = AgentConfig.from_env()
+    if args.doctor:
+        result = run_doctor(config)
+        print_doctor_result(result)
+        raise SystemExit(1 if result["failed"] > 0 else 0)
+
+    if not args.task:
+        parser.error("--task is required unless --doctor is used")
+
+    from argus.bootstrap import setup_environment
+
+    setup_environment()
 
     missing_env = config.missing_required()
     if missing_env:
@@ -96,6 +118,8 @@ def run_cli(argv: list[str] | None = None):
 
 
 def run_gui():
+    from argus.bootstrap import setup_environment
+
     setup_environment()
     print("启动 Argus Liquid Bar UI...")
     try:
