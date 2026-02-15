@@ -156,3 +156,8 @@ hackathon2512/
 - [Open Interpreter](https://github.com/OpenInterpreter/open-interpreter)
 - [LiteLLM](https://github.com/BerriAI/litellm)
 
+## 产品规划与社区
+
+- [产品战略](docs/PRODUCT_STRATEGY.md)
+- [Roadmap](docs/ROADMAP.md)
+- [贡献指南](CONTRIBUTING.md)
