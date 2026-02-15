@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  argus:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: argus-dual-agent:latest
+    container_name: argus-dual-agent
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+    command: ["uv", "run", "python", "main.py", "--task", "输出当前环境检查结果"]

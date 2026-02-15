@@ -1,4 +1,4 @@
-.PHONY: sync lint format test check run run-cli docker-build
+.PHONY: sync lint format test check run run-cli docker-build docker-run
 
 sync:
 	uv sync
@@ -22,3 +22,6 @@ run-cli:
 
 docker-build:
 	docker build -t argus-dual-agent:latest .
+
+docker-run:
+	docker compose run --rm argus
