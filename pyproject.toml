@@ -1,6 +1,6 @@
 [project]
 name = "argus-dual-agent"
-version = "1.1.0"
+version = "1.2.0"
 description = "Alibaba Agent Challenge & Gemini Hackathon project: dual-agent desktop automation framework"
 readme = "README.md"
 requires-python = ">=3.10"
